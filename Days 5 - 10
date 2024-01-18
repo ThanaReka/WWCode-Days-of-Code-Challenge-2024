@@ -1,3 +1,5 @@
+// Practicing Navigation in Jetpack Compose
+
 enum class LunchTrayScreen(@StringRes val title: Int){
     Start(title = R.string.start_order),
     EntreeMenu (title = R.string.choose_entree),
