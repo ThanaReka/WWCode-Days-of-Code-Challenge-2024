@@ -1,0 +1,44 @@
+# Write a function to count the number of vowels in a given string 
+
+vowels = ['a','e','i','o','u']
+given_string = "anything"
+count = 0
+
+string_characters = list(given_string)
+
+for i in range (len(string_characters)):
+        if string_characters[i] in vowels:
+            count += 1
+print(count)
+
+
+
+# Write a program to find the sum of all elements in a list.
+
+list = [2, 3, 4, 5, 6]
+total = sum(list)
+print(total)
+
+
+
+# Write a program to find the maximum and minimum values in a list.
+
+list = [2, 3, 4, 5, 6]
+max_value = max(list)
+min_value = min(list)
+print(max_value)
+print(min_value)
+
+
+
+# Write a program to check if a number is positive, negative, or zero.
+
+given_number = 5
+if given_number > 0:
+    print ("This is a positive number.")
+
+elif given_number < 0:
+    print ("This is a negative number.")
+
+else:
+    print ("This is a zero.")  
