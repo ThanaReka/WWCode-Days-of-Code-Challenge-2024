@@ -1,0 +1,17 @@
+# Write a function that accepts a string and calculates the number of uppercase and lowercase letters in it.
+
+
+string_of_interest = list(input("Input a string: "))
+
+count_uppercase = 0
+count_lowercase = 0
+
+for i in range (len(string_of_interest)):
+    if string_of_interest[i].isupper():
+        count_uppercase += 1
+    else:
+        count_lowercase += 1
+
+
+print("The number of uppercase letters is", count_uppercase)
+print("The number of lowercase letters is", count_lowercase)
