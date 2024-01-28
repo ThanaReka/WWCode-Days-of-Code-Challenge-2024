@@ -1,0 +1,95 @@
+# Write a program to print the first n numbers of a Fibonacci sequence
+
+n=int(input("Enter the number of terms: "))
+first = 0
+second = 1
+print(first)
+print(second)
+for x in range(1,n):
+    third = first + second
+    print(third)
+    first,second=second,third
+
+
+
+
+# Create a program that checks if a year is a leap year
+
+year = int(input("Enter the year of interest: "))
+
+if year % 4 == 0:
+        if year % 100 == 0:
+            if year % 400 == 0:
+                print("This is a leap year")
+            else:
+                print("This is not a leap year")
+        else:
+            print("This is a leap year")
+else:
+    print("This is not a leap year")
+
+
+
+
+
+# Write a function that counts the frequency of each word in a sentence.
+
+# split the sentence into a list
+
+string_of_interest = (input("Input a string: ")).split()
+
+print(string_of_interest)
+
+string_to_count = []
+ 
+   # loop till string values present in list str
+for i in string_of_interest:             
+ 
+    # checking for the duplicacy
+    if i not in string_to_count:
+ 
+        # insert value in string_to_count.append(i) 
+        string_to_count.append(i) 
+             
+for i in range(0, len(string_to_count)):
+ 
+    # count the frequency of each word(present 
+    # in string_to_count) in string_of_interest and print
+    print('Frequency of', string_to_count[i], 'is :', string_of_interest.count(string_to_count[i]))    
+
+
+
+
+
+# Create a program that capitalizes the first letter of each word in a sentence.
+
+import string
+
+string_of_interest = (input("Input a string: "))
+
+print(string.capwords(string_of_interest))
+
+
+
+
+# Create a program to find the largest among three numbers.
+
+n=int(input("Please enter a number: "))
+
+n2=int(input("Please enter another number: "))
+
+n3=int(input("Please enter another number: "))
+
+larger_number = 0
+
+
+if n > n2:
+    larger_number = n
+else:
+    larger_number = n2
+
+if larger_number > n3:
+    print(largest_number, "is the largest number.") 
+
+else:
+    print(n3, "is the largest number")  
