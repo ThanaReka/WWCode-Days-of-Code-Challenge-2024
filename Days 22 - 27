@@ -1,0 +1,329 @@
+@file:OptIn( ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
+
+package com.example.tasktracker.ui.TaskList
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.tasktracker.R
+import com.example.tasktracker.data.TaskRepository
+import com.example.tasktracker.data.model.Task
+
+/**
+ * Created by Gauri Gadkari on 1/23/24.
+ */
+class TaskListScreen {
+
+    @Composable
+    fun ListScreen(modifier: Modifier){
+        Scaffold(
+            modifier = modifier,
+            topBar = {
+                ListScreenTopAppBar(stringResource(R.string.timer),
+                    stringResource(R.string.activity_heading)
+                )
+            }
+        ) {
+            TaskList(TaskRepository.tasks,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it))
+        }
+    }
+
+    @Composable
+    fun TaskList(
+        tasks: List<Task>,
+        modifier: Modifier) {
+        LazyColumn(modifier = modifier
+            .padding(dimensionResource(R.dimen.task_list_padding)),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.task_list_padding)),
+        ) {
+            val grouped = tasks.groupBy{it.date}
+
+            grouped.forEach{ (date, tasks) ->
+                item {
+                    Header(date)
+                }
+
+                items(tasks){task ->
+                    TaskCard(
+                        task = task,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .border(dimensionResource(R.dimen.border_thickness),
+                                Color.Black,
+                                RoundedCornerShape(dimensionResource(R.dimen.round_corner_padding)))
+                    )
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun Header(text: String) {
+        Text(
+            text = text,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(all = dimensionResource(R.dimen.content_padding)),
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.bodyLarge,
+        )
+    }
+
+
+
+    @Composable
+    fun ListScreenTopAppBar(heading: String, subHeading: String) {
+        TopAppBar(
+            title = {
+                Column(modifier = Modifier
+                    .padding
+                        (start= dimensionResource(R.dimen.app_bar_padding),
+                        top = dimensionResource(R.dimen.app_bar_padding))
+                ) {
+                    Text(
+                        text = heading,
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.headlineSmall,
+                    )
+                    Spacer(Modifier.size(dimensionResource(R.dimen.app_bar_spacing)) )
+                    Text(
+                        text = subHeading,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp
+                    )
+                }
+            },
+            actions = {
+                IconButton(onClick = { /* do something */ }) {
+                    Icon(
+                        Icons.Filled.AddCircle,
+                        contentDescription = "Add Button",
+                        modifier = Modifier
+                            .size(dimensionResource(R.dimen.plus_icon_size))
+                            .offset(x = -50.dp),
+                        tint = Color.Black
+
+
+                    )
+                }
+            }
+
+        )
+    }
+
+
+    @Preview(showBackground = true)
+    @Composable
+    private fun TopAppBarPreview(){
+        ListScreenTopAppBar(stringResource(R.string.timer),
+            stringResource(R.string.activity_heading))
+    }
+
+    @Preview(showBackground = true)
+    @Composable
+    private fun TaskListPreview(){
+        TaskList(TaskRepository.tasks,modifier = Modifier)
+    }
+
+    @Preview(showBackground = true)
+    @Composable
+    private fun ListScreenPreview(){
+        ListScreen(modifier = Modifier)
+    }
+}
+
+@file:OptIn( ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class)
+
+package com.example.tasktracker.ui.TaskList
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.tasktracker.R
+import com.example.tasktracker.data.TaskRepository
+import com.example.tasktracker.data.model.Task
+
+/**
+ * Created by Gauri Gadkari on 1/23/24.
+ */
+class TaskListScreen {
+
+    @Composable
+    fun ListScreen(modifier: Modifier){
+        Scaffold(
+            modifier = modifier,
+            topBar = {
+                ListScreenTopAppBar(stringResource(R.string.timer),
+                    stringResource(R.string.activity_heading)
+                )
+            }
+        ) {
+            TaskList(TaskRepository.tasks,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it))
+        }
+    }
+
+    @Composable
+    fun TaskList(
+        tasks: List<Task>,
+        modifier: Modifier) {
+        LazyColumn(modifier = modifier
+            .padding(dimensionResource(R.dimen.task_list_padding)),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.task_list_padding)),
+        ) {
+            val grouped = tasks.groupBy{it.date}
+
+            grouped.forEach{ (date, tasks) ->
+                item {
+                    Header(date)
+                }
+
+                items(tasks){task ->
+                    TaskCard(
+                        task = task,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .border(dimensionResource(R.dimen.border_thickness),
+                                Color.Black,
+                                RoundedCornerShape(dimensionResource(R.dimen.round_corner_padding)))
+                    )
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun Header(text: String) {
+        Text(
+            text = text,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(all = dimensionResource(R.dimen.content_padding)),
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.bodyLarge,
+        )
+    }
+
+
+
+    @Composable
+    fun ListScreenTopAppBar(heading: String, subHeading: String) {
+        TopAppBar(
+            title = {
+                Column(modifier = Modifier
+                    .padding
+                        (start= dimensionResource(R.dimen.app_bar_padding),
+                        top = dimensionResource(R.dimen.app_bar_padding))
+                ) {
+                    Text(
+                        text = heading,
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.headlineSmall,
+                    )
+                    Spacer(Modifier.size(dimensionResource(R.dimen.app_bar_spacing)) )
+                    Text(
+                        text = subHeading,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp
+                    )
+                }
+            },
+            actions = {
+                IconButton(onClick = { /* do something */ }) {
+                    Icon(
+                        Icons.Filled.AddCircle,
+                        contentDescription = "Add Button",
+                        modifier = Modifier
+                            .size(dimensionResource(R.dimen.plus_icon_size))
+                            .offset(x = -50.dp),
+                        tint = Color.Black
+
+
+                    )
+                }
+            }
+
+        )
+    }
+
+
+    @Preview(showBackground = true)
+    @Composable
+    private fun TopAppBarPreview(){
+        ListScreenTopAppBar(stringResource(R.string.timer),
+            stringResource(R.string.activity_heading))
+    }
+
+    @Preview(showBackground = true)
+    @Composable
+    private fun TaskListPreview(){
+        TaskList(TaskRepository.tasks,modifier = Modifier)
+    }
+
+    @Preview(showBackground = true)
+    @Composable
+    private fun ListScreenPreview(){
+        ListScreen(modifier = Modifier)
+    }
+}
