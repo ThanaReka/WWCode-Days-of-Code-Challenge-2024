@@ -151,3 +151,19 @@ def pick_random():
     print("The random number generated is ", random_num)
 
 pick_random()  
+
+
+
+
+
+# Create a function that finds the second smallest element in a list.
+
+list = [23, 435, 657, 235, 879]
+
+def find_smallest():
+    min_value = min(list)
+    list.remove(min_value)
+    min_value = min(list)
+    print("The second largest element in this list is",min_value)
+
+find_smallest() 
