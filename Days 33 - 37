@@ -1,0 +1,172 @@
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+
+/**
+ * Entity data class represents a single row in the database.
+ */
+
+// Use the tableName argument to set the items as the SQLite table name
+@Entity(tableName = "items")
+data class Item(
+    // Annotating the id property with @PrimaryKey makes the id the primary key.
+    // Assigning the id a default value of 0 is necessary for the id to auto generate id values
+    // Setting the parameter autoGenerate to true so that Room generates an incrementing ID for each entity.
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    val name: String,
+    val price: Double,
+    val quantity: Int
+)
+
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
+import kotlinx.coroutines.flow.Flow
+
+@Dao
+interface ItemDao {
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insert(item: Item)
+
+    @Update
+    suspend fun update(item: Item)
+
+    @Delete
+    suspend fun delete(item: Item)
+
+    /*
+     * There is no convenience annotation for the remaining functionality,
+     * so you have to use the @Query annotation and supply SQLite queries
+     */
+
+    //Use the SQLite query as a string parameter to the @Query annotation.
+    @Query("SELECT * from items WHERE id = :id" )
+    fun getItem(id: Int): Flow<Item>
+
+    @Query("SELECT * from items ORDER BY name ASC")
+    fun getAllItems(): Flow<List<Item>>
+
+    /*
+     * With Flow as the return type, you receive notification whenever the data in the database changes.
+     * The Room keeps this Flow updated for you, which means you only need to explicitly get the data once.
+     * This setup is helpful to update the inventory list.
+     * Because of the Flow return type, Room also runs the query on the background thread.
+     * You don't need to explicitly make it a suspend function and call it inside a coroutine scope.
+     */
+}
+
+/*
+ * Mark the functions with the suspend keyword to let it run on a separate thread.
+ * The database operations can take a long time to execute, so they need to run on a separate thread.
+ * Room doesn't allow database access on the main thread.
+ */
+
+import android.content.Context
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+
+// Whenever you change the schema of the database table, you have to increase the version number
+// Set exportSchema to false so as not to keep schema version history backups
+@Database(entities = [Item::class], version = 1, exportSchema = false)
+abstract class InventoryDatabase: RoomDatabase() {
+// declare an abstract function that returns the ItemDao so that the database knows about the DAO.
+    abstract fun itemDao(): ItemDao
+// companion object allows access to the methods to create or get the database and uses the class name as the qualifier
+    companion object {
+/**
+ * Instance variable keeps a reference to the database, when one has been created help maintaining a single
+ * instance of the database opened at a given time, which is an expensive resource to create and maintain.
+ */
+/**
+ * value of a volatile variable is never cached, and all reads and writes are to and from the main memory.
+ * These features help ensure the value of Instance is always up to date and is the same for all execution
+ * threads. It means that changes made by one thread to Instance are immediately visible to all other threads.
+ */
+
+    @Volatile
+    private var Instance: InventoryDatabase? = null
+
+    // Context is a parameter that the database builder needs
+    fun getDatabase(context: Context): InventoryDatabase {
+/**
+ * Wrapping the code to get the database inside a synchronized block means that only one thread of execution
+ * at a time can enter this block of code, which makes sure the database only gets initialized once
+ * (instead of risking multiple threads potentially asking for a database instance at the same time
+ * resulting in two databases (known as a race condition))
+ */
+        // if the Instance is not null, return it, otherwise create a new database instance.
+                                            //this = companion object
+        return Instance ?: synchronized(this) {
+            Room.databaseBuilder(context, InventoryDatabase::class.java, "item_database").fallbackToDestructiveMigration()
+                .build()
+                .also { Instance = it }
+            // "it" keeps a reference to the recently created db instance
+        }
+    }
+
+    }
+}
+
+/**
+ * Note: Normally, you would provide a migration object with a migration strategy for when the schema changes.
+ * A migration object is an object that defines how you take all rows with the old schema and convert them to
+ * rows in the new schema, so that no data is lost. Migration is beyond the scope of this codelab, but the term
+ * refers to when the schema is changed and you need to move your date without losing the data. Since this is a
+ * sample app, a simple alternative is to destroy and rebuild the database, which means that the inventory data
+ * is lost. For example, if you change something in the entity class, like adding a new parameter, you can allow
+ * the app to delete and re-initialize the database.
+ */
+
+import kotlinx.coroutines.flow.Flow
+
+/**
+ * Repository that provides insert, update, delete, and retrieve of [Item] from a given data source.
+ */
+interface ItemsRepository {
+    /**
+     * Retrieve all the items from the given data source.
+     */
+    fun getAllItemsStream(): Flow<List<Item>>
+
+    /**
+     * Retrieve an item from the given data source that matches with the [id].
+     */
+    fun getItemStream(id: Int): Flow<Item?>
+
+    /**
+     * Insert item in the data source
+     */
+    suspend fun insertItem(item: Item)
+
+    /**
+     * Delete item from the data source
+     */
+    suspend fun deleteItem(item: Item)
+
+    /**
+     * Update item in the data source
+     */
+    suspend fun updateItem(item: Item)
+}
+
+// functions in the interface, which map to the DAO implementation
+
+
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+
+val homeUiState: StateFlow<HomeUiState> =
+    itemsRepository.getAllItemsStream().map { HomeUiState(it) }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+            initialValue = HomeUiState()
+        )
