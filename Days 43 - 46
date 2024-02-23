@@ -1,0 +1,210 @@
+# Create a program that checks if a given string is a valid email address.
+
+import re  
+  
+given_string = input("Type in a String: ")
+
+def validate_email(email):  
+    if re.match(r"[^@]+@[^@]+\.[^@]+", email):  
+        return True  
+    return False  
+  
+
+if validate_email(given_string):  
+    print("This is a valid email address.")  
+else:  
+    print("This is not a valid email address.")  
+
+
+
+
+
+# Create a function that calculates the average of a list of numbers.
+
+def calc_average():
+    list_of_numbers = [int(item) for item in input("Enter a list of numbers separated by space: ").split()]
+    print('list of numbers: ', list_of_numbers)
+
+    total = 0
+
+    for i in range (len(list_of_numbers)):
+        total += list_of_numbers[i]
+        
+
+    list_average = total/len(list_of_numbers)    
+
+    print('The average of the given list of number is', list_average)        
+
+
+calc_average()
+
+
+
+
+# Write a test case for a function that checks if a number is prime.
+
+# Import the 'unittest' module for writing unit tests.
+import unittest
+
+# Define a function 'is_prime' to check if a number is prime.
+def is_prime(number):
+    if number < 2:
+        return False
+    for i in range(2, int(number**0.5) + 1):
+        if number % i == 0:
+            return False
+    return True
+
+# Define a test case class 'PrimeNumberTestCase' that inherits from 'unittest.TestCase'.
+class PrimeNumberTestCase(unittest.TestCase):
+    # Define a test method 'test_prime_numbers' to test prime numbers.
+    def test_prime_numbers(self):
+        prime_numbers = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31]
+        # You can use the alternative 'prime_numbers' list by uncommenting it.
+        # prime_numbers = [2, 3, 4, 8, 11, 13, 17, 19, 23, 30, 31]
+        print("Prime numbers:", prime_numbers)
+        # Iterate through prime numbers and assert that they are recognized as prime.
+        for number in prime_numbers:
+            self.assertTrue(is_prime(number), f"{number} is not recognized as a prime number")
+
+    # Define a test method 'test_non_prime_numbers' to test non-prime numbers.
+    def test_non_prime_numbers(self):
+        non_prime_numbers = [4, 6, 8, 10, 12, 14, 16, 18, 20]
+        # You can use the alternative 'non_prime_numbers' list by uncommenting it.
+        # non_prime_numbers = [4, 6, 8, 9, 11, 12, 14, 17, 16, 18, 20]
+        print("Non-prime numbers:", non_prime_numbers)
+        # Iterate through non-prime numbers and assert that they are not recognized as prime.
+        for number in non_prime_numbers:
+            self.assertFalse(is_prime(number), f"{number} is incorrectly recognized as a prime number")
+
+# Check if the script is run as the main program.
+if __name__ == '__main__':
+    # Run the test cases using 'unittest.main()'.
+    unittest.main()
+
+
+
+
+# Write a Python program to merge two dictionaries.
+
+dict_one = {"fruit": "banana", "vegetable": "carrot", "dairy": "yogurt", "meat": "chicken"}
+dict_two = {"snacks":"pretzels", "breakfast": "pancakes", "lunch": "roti", "dinner": "pasta"}
+
+dict_two.update(dict_one)
+
+print(dict_two)
+
+
+
+
+import unittest
+
+def add_two_numbers(a: int, b: int) -> int:
+    return a + b
+
+
+class TestAddition(unittest.TestCase):
+    def test_sum(self):
+        assert add_two_numbers(3, 3) == 6
+
+if __name__ == '__main__':    
+    unittest.main()
+
+
+
+
+# Write a Python program to check if two strings are anagrams
+
+given_string_1 = input("Type in a String: ")
+given_string_2 = input("Type in another String: ")
+
+str1 = sorted(given_string_1.lower())
+str2 = sorted(given_string_2.lower())
+
+if (str1 == str2) :
+        print("These 2 strings are anagrams.")
+else:
+    print("These 2 strings are not anagrams.")
+
+
+
+
+
+# Write a program to iterate through a dictionary and print its keys and values.
+
+a_dictionary = {"fruit": "banana", "vegetable": "carrot", "dairy": "yogurt", "meat": "chicken"}
+
+for key in a_dictionary.keys():
+    print(key, "->", a_dictionary[key])
+
+
+
+
+# Write a program to flatten a nested list
+
+ 
+nested_list = [
+        [11, 22, 33, 44], 
+        [55, 66, 77], 
+        [88, 99]
+        ]
+ 
+flatList = sum(nested_list, [])
+ 
+print('Flattened list is:', flatList)
+
+
+
+
+
+# Write a program to find the most common words in a text file
+
+count = 0;  
+word = "";  
+maxCount = 0;  
+words = [];  
+   
+#Opens a file in read mode  
+file = open("story1.txt", "r")  
+      
+#Gets each line till end of file is reached  
+for line in file:  
+    #Splits each line into words  
+    string = line.lower().replace(',','').replace('.','').split(" ");  
+    #Adding all words generated in previous step into words  
+    for s in string:  
+        words.append(s);  
+   
+#Determine the most repeated word in a file  
+for i in range(0, len(words)):  
+    count = 1;  
+    #Count each word in the file and store it in variable count  
+    for j in range(i+1, len(words)):  
+        if(words[i] == words[j]):  
+            count = count + 1;  
+              
+    #If maxCount is less than count then store value of count in maxCount  
+    #and corresponding word to variable word  
+    if(count > maxCount):  
+        maxCount = count;  
+        word = words[i];  
+          
+print("Most repeated word: " + word);  
+file.close();  
+
+
+
+
+
+# Write a function to find the largest common divisor of two numbers using a function
+
+import math
+
+def largest_common_divisor():
+
+    num_1 = int(input("Enter a number: "))
+    num_2 = int(input("Enter another number: "))
+    print("The largest common divisor of these two numbers is", math.gcd(num_1, num_2))
+
+
+largest_common_divisor()
