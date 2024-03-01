@@ -1,0 +1,16 @@
+coding-projects/android/TaskTracker/app/src/main/java/com/example/tasktracker/MainScreen.kt
+
+...     composable(NavScreens.TaskDetail.route) {
+            TaskDetailScreen(onNavigateToList = { navController.navigate(NavScreens.TaskList.route) },
+//                             onDone = { navController.popBackStack(NavScreens.TaskList.route, inclusive = false) }
+
+                )
+
+
+coding-projects/android/TaskTracker/app/src/main/java/com/example/tasktracker/ui/TaskDetail/TaskDetailScreen.kt
+
+            OutlinedButton(
+                onClick = { onNavigateToList() },
+                colors = ButtonDefaults.textButtonColors(
+                    containerColor = Color.White, contentColor = Green
+                ),
