@@ -1,0 +1,63 @@
+# Write a program that uses recursion to generate all permutations of a list
+
+def permute(s):
+  out = []
+  if len(s) == 1:
+    return s
+  else:
+    for i,let in enumerate(s):
+      for perm in permute(s[:i] + s[i+1:]):
+        out += [let + perm]
+  return out
+
+
+l = permute(['1','2','3','4'])
+print(l)
+
+
+
+
+
+
+# Write a program that uses a try-except block to handle division by zero
+
+try:
+    value1 = int(input('Enter a natural number: '))
+    value2 = int(input('Enter another natural number: '))
+    print('Dividing', value1, 'by', value2, 'results in', value1/value2)        
+except ZeroDivisionError:
+    print('Division by zero is not allowed in our Universe.')
+
+
+
+
+
+
+# Write a program that removes all whitespaces from a given string
+
+given_string = "Remove all whitespaces in this string."
+
+no_whitespace = given_string.replace(" ", "")
+print(no_whitespace) 
+
+
+
+
+
+# Write a program that reads an integer from the user and handles invalid inputs
+
+try:
+    input_value = int(input('Enter an integer: '))
+    print(input_value)        
+except ValueError:
+    print('This is an invalid entry')    
+
+
+
+
+
+
+
+
+
+
