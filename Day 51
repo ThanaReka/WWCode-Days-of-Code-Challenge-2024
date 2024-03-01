@@ -1,0 +1,43 @@
+# Write a function to check if a given list is sorted
+
+# list_to_check = ['A', 'C', 'D', 'B', 'F']
+list_to_check = [2, 4, 6, 8, 10]
+sorted_list = list_to_check.sort()
+
+for i in range(len(list_to_check)):
+    if list_to_check[i] == sorted_list[i]:
+        
+        print("This list is sorted.")
+
+    else:
+        print("This list is not sorted.")
+
+
+
+
+
+# Create a program that imports the math module and uses its functions
+
+import math 
+
+r = int(input("Enter a value for the radius: "))
+
+a = math.pi *r**2
+print("The area of the circle is", a)
+
+
+
+
+# Create a program that implements the bubble sort algorithm
+
+my_list = ['A', 'C', 'D', 'B', 'F']  
+swapped = True  
+
+while swapped:
+    swapped = False  
+    for i in range(len(my_list) - 1):
+        if my_list[i] > my_list[i + 1]:
+            swapped = True  
+            my_list[i], my_list[i + 1] = my_list[i + 1], my_list[i]
+
+print(my_list)
