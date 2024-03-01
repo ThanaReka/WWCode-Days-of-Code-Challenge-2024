@@ -1,0 +1,127 @@
+/** 
+ * move comments above the code rather than place them after
+ */
+
+class TaskListViewModel: ViewModel() {
+
+    /**
+     * following hardcoded strings should eventually be replaced by data based on user input once
+     * app persistence is implemented and TaskRepository is modified to retrieve data from the DAO
+     */
+    fun getAllTasks(): Flow<List<Task>> = flowOf(
+        listOf(
+            Task(
+                1,
+                "Walking",
+                "Yesterday",
+                0,
+                0,
+                "01:35:08"
+            ),
+            Task(
+                2,
+                "finishing certifications",
+                "Yesterday",
+                0,
+                0,
+                "03:40:04"
+            ),
+            Task(
+                3,
+                "setting up new dryer unit",
+                "December 19, Tuesday",
+                0,
+                0,
+                "01:20:21"
+            ),
+            Task(
+                4,
+                "coding crunch time",
+                "December 19, Tuesday",
+                0,
+                0,
+                "09:30:10"
+            )
+        )
+    )
+}
+
+
+
+/**  
+  * remove the spacer all together and set textAlign=TextAlign.End on the 2nd text in the row
+  */
+
+    @Composable
+    fun TaskCard(task: Task, modifier: Modifier = Modifier) {
+        Card(modifier = modifier
+            .fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White,
+            ),
+        ) {
+            Row(horizontalArrangement = Arrangement.SpaceBetween) {
+                Text(
+                    text = task.activityName,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(dimensionResource(R.dimen.medium_padding)),
+                    style = MaterialTheme.typography.bodySmall,
+                    )
+                Text(
+                    text = task.duration,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(dimensionResource(R.dimen.medium_padding)),
+                    style = MaterialTheme.typography.bodySmall,
+                    textAlign = TextAlign.End
+                )
+            }
+
+        }
+
+    }
+
+
+/**  
+  * set the modifier as a default value in your composable so we don't have to do it in the preview
+  */
+@Composable
+fun TaskList(
+    taskList: List<Task>,
+    modifier: Modifier = Modifier
+) {
+    LazyColumn(
+        modifier = modifier
+            .padding(dimensionResource(R.dimen.medium_padding)),
+        verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.medium_padding)),
+    ) {
+        item {
+            Text(
+                text = stringResource(R.string.activity_heading),
+                fontWeight = FontWeight.Medium,
+                fontSize = 20.sp
+            )
+        }
+        val grouped = taskList.groupBy { it.date }
+
+        grouped.forEach { (date, tasks) ->
+            item {
+                Header(date)
+            }
+
+            items(tasks) { task ->
+                TaskCard(
+                    task = task,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(
+                            dimensionResource(R.dimen.border_thickness),
+                            Color.Black,
+                            RoundedCornerShape(dimensionResource(R.dimen.small_round_corner))
+                        )
+                )
+            }
+        }
+    }
+}
