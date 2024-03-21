@@ -1,0 +1,359 @@
+# Create a program that allows users to draw on a canvas using a GUI
+
+from tkinter import *
+import tkinter.messagebox as tmsg
+from tkinter.filedialog import askopenfilename, asksaveasfilename
+import pickle
+from tkinter.colorchooser import askcolor
+
+
+prev_x = 0
+prev_y = 0
+x = 0
+y = 0
+created_element_info = []
+new = []
+created = []
+shape = "Line"
+color = "blue"
+eraser_on = False
+line_width = 3
+
+
+def saveDrawingFile(e=""):
+    global created_element_info
+    filename = asksaveasfilename(initialfile="drawing" ,defaultextension=".pkl", filetypes=[("Pickle Files", "*.pkl")])
+    if filename != None: 
+        with open(filename, "wb") as f:
+            pickle.dump(created_element_info, f)
+
+
+def colorPicker(e=""):
+    global color, eraser_on
+    eraser_on = False
+    color = askcolor(color=color)[1]
+    root.config(cursor=f'cursor {color} {color}', insertbackground=f"{color}")
+
+
+def shapechanger(e=""):
+    global shape
+    shape = radiovalue.get()
+
+
+def createElms():
+    global shape
+    if shape == "Rectangle":
+        a = canvas.create_rectangle(prev_x, prev_y, x, y, fill=color)
+    elif shape == "Oval":
+        a = canvas.create_oval(prev_x, prev_y, x, y, fill=color)
+    elif shape == "Polygan":
+        a = canvas.create_polygon(
+            prev_x, prev_y, x, y, prev_x, prev_y, fill=color)
+    elif shape == "Arc":
+        a = canvas.create_arc(prev_x, prev_y, x, y, fill=color)
+    elif shape == "Text":
+        text = input("Enter the text")
+        a = canvas.create_text(x, y, fill=color, font=f"Times {abs(y-prev_y)} italic bold",
+                            text=text)
+    else:
+        a = canvas.create_line(prev_x, prev_y, x, y,
+                               width=line_width, fill=color,
+                               capstyle=ROUND, smooth=TRUE, splinesteps=3)
+    return a
+
+def createLine(e=""):
+    global x, y, created, new, color, line_width
+    try:
+        if e != "Get":
+            x = e.x
+            y = e.y
+        status.set(f"Position : x - {x} , y - {y}")
+        statusbar.update()
+        a = createElms()
+        if e != "Get":
+            created.append(a)
+            for item in created[:-1]:
+                canvas.delete(item)
+    except Exception as e:
+        tmsg.showerror("Some Error Occurred!", e)
+
+
+def captureMotion(e=""):
+    status.set(f"Position : x - {e.x} , y - {e.y}")
+    statusbar.update()
+
+
+def recordPosition(e=""):
+    global prev_x
+    global prev_y
+    print("Updated!")
+    prev_x = e.x
+    prev_y = e.y
+
+
+def saveDrawing(e=""):
+    global created, shape, color
+    global created_element_info
+    new.append(created[-1])
+    created = []
+    created_element_info_new = {
+        "type": shape,
+        "color": color,
+        "prev_x": prev_x,
+        "prev_y": prev_y,
+        "x": x,
+        "y": y
+    }
+    created_element_info.append(created_element_info_new)
+    # print(created_element_info)
+
+
+def setlinewidth(e=""):
+    global line_width
+    line_width = scale.get()
+
+
+def clearCanvas(e=""):
+    global created_element_info, canvas, created, new
+    canvas.delete("all")
+    created_element_info = []
+    created = []
+    new = []
+
+
+def getsavedrawing():
+    global x, y, prev_x, prev_y, shape, color
+    filename = askopenfilename(defaultextension=".pkl", filetypes = [("Pickle Files", "*.pkl")])
+    if filename != None:
+        with open(filename, "rb") as f:
+            data = pickle.load(f)
+            for draw_info in data:
+                x = draw_info["x"]
+                y = draw_info["y"]
+                prev_x = draw_info["prev_x"]
+                prev_y = draw_info["prev_y"]
+                shape = draw_info["type"]
+                color = draw_info["color"]
+                createElms()
+
+
+root = Tk()
+root.title("Drawing Pad")
+# root.geometry("600x300")
+root.minsize(600, 300)
+CANVAS_WIDTH = 600
+CANVAS_HEIGHT = 400
+canvas = Canvas(root, width=CANVAS_WIDTH, height=CANVAS_HEIGHT, bg="white")
+# canvas.create_line(0,0,300,100, fill="red")
+canvas.pack()
+canvas.bind("<1>", recordPosition)
+canvas.bind("<B1-Motion>", createLine)
+canvas.bind("<ButtonRelease-1>", saveDrawing)
+canvas.bind("<Motion>", captureMotion)
+radiovalue = StringVar()
+radiovalue.set("Line")
+geometry_shapes = ["Line", "Rectangle", "Arc", "Oval", "Text"]
+frame = Frame(root)
+frame.pack(side=BOTTOM)
+for shape in geometry_shapes:
+    radio = Radiobutton(frame, text=shape, variable=radiovalue, font="comicsans 12 bold",
+                        value=shape, command=shapechanger).pack(side=LEFT, padx=6, pady=3)
+Button(frame, text="Save", font="comicsans 12 bold",
+       command=saveDrawingFile).pack(side=BOTTOM, padx=6, pady=6)
+Button(frame, text="Clear", font="comicsans 12 bold",
+       command=clearCanvas).pack(side=BOTTOM, padx=6)
+Button(frame, text="Color", font="comicsans 12 bold",
+       command=colorPicker).pack(side=BOTTOM, padx=6)
+Button(frame, text="Get", font="comicsans 12 bold",
+       command=getsavedrawing).pack(side=BOTTOM, padx=6)
+scale = Scale(root, from_=1, to=20, orient=HORIZONTAL, command=setlinewidth)
+scale.pack(side=BOTTOM)
+# Status bar=
+status = StringVar()
+status.set("Position : x - 0 , y - 0")
+statusbar = Label(root, textvariable=status, anchor="w", relief=SUNKEN)
+statusbar.pack(side=BOTTOM, fill=X)
+root.mainloop()
+
+
+# https://dev.to/fahad_islam/building-a-drawing-canvas-gui-using-python-step-to-step-guide-33m
+# https://github.com/RF-Fahad-Islam/Drawing-Pad/blob/main/Drawing%20Pad/draw.py
+# https://github.com/RF-Fahad-Islam/Drawing-Pad/blob/main/Drawing%20Pad/draw.py
+
+
+
+
+
+
+
+# Create a function to find all words in a sentence that start with a vowel
+
+vowels = "aeiou"
+string_of_interest = (input("Input a string: ")).split()
+print(string_of_interest)
+
+def find_vowels():
+
+    count = 0
+    
+    for i in string_of_interest:
+
+        # check for vowel beginning
+        flag = any(i.startswith(l) for l in vowels)
+
+        if flag:
+            count+=1
+
+    print(count)
+
+find_vowels()   
+
+
+
+
+
+
+# Create a function that takes a string and returns the reverse of each word
+
+string_of_interest = (input("Input a string: ")).split()
+print(string_of_interest)
+empty_string = " "
+
+def return_reverse():
+
+    # for i in string_of_interest:
+    #     print(reversed(string_of_interest(i)))
+    reversed_words = list(map(lambda x: x[::-1], string_of_interest))
+    # return ' '.join(reversed_words)
+
+    print(' '.join(reversed_words))
+
+
+return_reverse()
+
+
+
+
+
+
+# Create a function to extract all URLs from a given text using regular expressions
+
+import re
+
+def find_url(given_string):
+    print(given_string)
+    urls = re.findall(r'https?://[^\s<>"]+|www\.[^\s<>"]+', given_string)
+    print(urls)
+
+
+find_url(input("Input a string: "))
+
+
+
+
+
+
+
+# Create a function that returns the key with the maximum value in a dictionary
+
+dictt = {'1': 100, '2': 1292, '3': 88}  
+  
+# Getting the key with maximum value 
+
+def return_max_key():
+    key_max = max(zip(dictt.values(), dictt.keys()))[1]  
+    print("The key with the maximum value is: ", key_max)  
+
+return_max_key()
+
+
+
+
+
+
+
+
+
+
+# Create a function that converts a string to an integer and handles ValueError
+
+def string_to_int():
+    # Handling Value Error
+    try:
+        num = int(input("Enter an integer: "))
+        print("The entered number is:", num)
+    except ValueError:
+        print("Invalid input. Please enter an integer.")
+
+string_to_int()
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Create a function that checks if a number is a perfect square
+
+import math  
+num = 25  
+sqrt_num = math.sqrt(num)  
+if sqrt_num.is_integer():  
+    print("The number is a perfect square")  
+else:  
+    print("The number is not a perfect square")  
+
+
+
+
+
+
+
+
+
+
+
+
+# Create a class representing a simple bank account with deposit and withdraw methods
+
+# BankAccount class
+class Bank_Account:
+	def __init__(self):
+		self.balance=0
+		print("Hello!!! Welcome to the Deposit & Withdrawal Machine")
+     
+    # Function to deposit amount
+	def deposit(self):
+		amount=float(input("Enter amount to be Deposited: "))
+		self.balance += amount
+		print("\n Amount Deposited:",amount)
+		
+    # Function to withdraw the amount
+	def withdraw(self):
+		amount = float(input("Enter amount to be Withdrawn: "))
+		if self.balance>=amount:
+			self.balance-=amount
+			print("\n You Withdrew:", amount)
+		else:
+			print("\n Insufficient balance ")
+			
+     
+    # Function to display the amount
+	def display(self):
+		print("\n Net Available Balance=",self.balance)
+
+# Driver code
+
+# creating an object of class
+s = Bank_Account()
+
+# Calling functions with that class object
+s.deposit()
+s.withdraw()
+s.display()
