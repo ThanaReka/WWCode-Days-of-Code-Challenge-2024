@@ -1,0 +1,10 @@
+package com.example.tasktracker.ui.TaskList
+
+import com.example.tasktracker.data.TaskDAO
+
+@HiltViewModel
+class TaskListViewModel @Inject constructor(private val taskDao: TaskDAO) : ViewModel() {
+    fun getAllTasks(): Flow<List<Task>> = taskDao.getAllTasks()
+
+}
+
