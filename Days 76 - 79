@@ -1,0 +1,27 @@
+coding-projects/android/TaskTracker/app/src/main/java/com/example/tasktracker/TimeUtil.kt
+
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
+
+        fun convertMillisToDate(timeZone: String, millis: Long): String {
+            val formatter = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+            formatter.timeZone = TimeZone.getTimeZone(timeZone)
+            return formatter.format(Date(millis))
+        }
+
+
+coding-projects/android/TaskTracker/app/src/main/java/com/example/tasktracker/ui/TaskDetail/TaskDetailScreen.kt
+
+mutableStateOf(TimeUtil.convertMillisToDate("UTC", Calendar.getInstance().timeInMillis))
+
+TimeUtil.convertMillisToDate("UTC", it)
+
+
+
+coding-projects/android/TaskTracker/app/src/main/java/com/example/tasktracker/ui/TaskDetail/TaskDetailViewModel.kt
+
+import java.util.Locale
+
+val date: String = TimeUtil.convertMillisToDate(Locale.getDefault().toString(), Calendar.getInstance().timeInMillis),
